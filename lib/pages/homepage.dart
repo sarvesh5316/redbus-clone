@@ -183,6 +183,33 @@ class _HomePageState extends State<HomePage> {
                                       child: Row(
                                         children: [
                                           const Text(
+                                            "Seat Number:",
+                                            style: TextStyle(
+                                                fontSize: 16,
+                                                fontWeight: FontWeight.w500),
+                                          ),
+                                          const SizedBox(
+                                            width: 5,
+                                          ),
+                                          // if (snapshot.data!.docs
+                                          //     .contains('selectedSeats'))
+                                          Text(
+                                            data['selectedSeats'] ?? " ",
+                                            style: const TextStyle(
+                                                fontSize: 16,
+                                                fontWeight: FontWeight.w500),
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                    const SizedBox(
+                                      height: 5,
+                                    ),
+                                    Padding(
+                                      padding: const EdgeInsets.all(8.0),
+                                      child: Row(
+                                        children: [
+                                          const Text(
                                             "Gender : ",
                                             style: TextStyle(
                                                 fontSize: 16,

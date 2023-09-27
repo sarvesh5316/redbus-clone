@@ -1,6 +1,8 @@
 // ignore_for_file: prefer_const_constructors, avoid_unnecessary_containers
 
+import 'package:book_my_seat/book_my_seat.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -20,6 +22,7 @@ class Add extends StatefulWidget {
     this.fromcity,
     this.tocity,
     this.bustype,
+    this.seatno,
   }) : super(key: key);
 
   final String? id;
@@ -31,6 +34,7 @@ class Add extends StatefulWidget {
   final String? fromcity;
   final String? tocity;
   final String? bustype;
+  final String? seatno;
 
   @override
   State<Add> createState() => _AddState();
@@ -67,7 +71,7 @@ class _AddState extends State<Add> {
         'Ahemdabad',
         'New Delhi',
         'Gurgaon',
-        'Karnatak',
+        'Karnataka',
         'Banglore',
         'Mumbai',
         'Jaipur',
@@ -83,7 +87,7 @@ class _AddState extends State<Add> {
         'Ahemdabad',
         'New Delhi',
         'Gurgaon',
-        'Karnatak',
+        'Karnataka',
         'Banglore',
         'Mumbai',
         'Jaipur',
@@ -96,6 +100,7 @@ class _AddState extends State<Add> {
       ];
   String? selectedbustype;
   final List<String> _locations = [
+    'Government Bus',
     'AC Sleeper(2+2)',
     'AC Seater(3+2)',
     'Non AC Sleeper',
@@ -108,20 +113,6 @@ class _AddState extends State<Add> {
   bool seepwd = false;
   bool changebutton = false;
   final _formkey = GlobalKey<FormState>();
-
-// navigation and animation button code
-  /*moveToHome(BuildContext context) async{
-    if(_formkey.currentState!.validate()) {
-      setState(() {
-        changebutton = true;
-      });
-       Navigator.push(
-        context, MaterialPageRoute(builder: (context) => Submit()),);
-      setState(() {
-        changebutton = false;
-      });
-    }
-  }*/
 
   @override
   void initState() {
@@ -136,6 +127,7 @@ class _AddState extends State<Add> {
     super.initState();
   }
 
+  Set<SeatNumber> selectedSeats = {};
   @override
   Widget build(BuildContext context) {
     return SafeArea(
@@ -257,17 +249,6 @@ class _AddState extends State<Add> {
                               'Select Your Gender',
                               style: TextStyle(fontSize: 14),
                             ),
-                            // icon: const Icon(
-                            //   Icons.arrow_drop_down,
-                            //   color: Colors.black45,
-                            // ),
-                            // iconSize: 30,
-                            // buttonHeight: 60,
-                            // buttonPadding:
-                            //     const EdgeInsets.only(left: 20, right: 10),
-                            // dropdownDecoration: BoxDecoration(
-                            //   borderRadius: BorderRadius.circular(15),
-                            // ),
                             items: genderItems
                                 .map((item) => DropdownMenuItem<String>(
                                       value: item,
@@ -307,32 +288,17 @@ class _AddState extends State<Add> {
                             decoration: InputDecoration(
                               fillColor: Colors.grey.shade100,
                               filled: true,
-                              //Add isDense true and zero Padding.
-                              //Add Horizontal padding using buttonPadding and Vertical padding by increasing buttonHeight instead of add Padding here so that The whole TextField Button become clickable, and also the dropdown menu open under The whole TextField Button.
                               isDense: true,
                               contentPadding: EdgeInsets.zero,
                               border: OutlineInputBorder(
                                 borderRadius: BorderRadius.circular(10),
                               ),
-                              //Add more decoration as you want here
-                              //Add label If you want but add hint outside the decoration to be aligned in the button perfectly.
                             ),
                             isExpanded: true,
                             hint: const Text(
                               'Select Your City',
                               style: TextStyle(fontSize: 14),
                             ),
-                            // icon: const Icon(
-                            //   Icons.arrow_drop_down,
-                            //   color: Colors.black45,
-                            // ),
-                            // iconSize: 30,
-                            // buttonHeight: 60,
-                            // buttonPadding:
-                            //     const EdgeInsets.only(left: 20, right: 10),
-                            // dropdownDecoration: BoxDecoration(
-                            //   borderRadius: BorderRadius.circular(15),
-                            // ),
                             items: fromCity
                                 .map((items) => DropdownMenuItem<String>(
                                       value: items,
@@ -379,17 +345,6 @@ class _AddState extends State<Add> {
                               'Select Your City',
                               style: TextStyle(fontSize: 14),
                             ),
-                            // icon: const Icon(
-                            //   Icons.arrow_drop_down,
-                            //   color: Colors.black45,
-                            // ),
-                            // iconSize: 30,
-                            // buttonHeight: 60,
-                            // buttonPadding:
-                            //     const EdgeInsets.only(left: 20, right: 10),
-                            // dropdownDecoration: BoxDecoration(
-                            //   borderRadius: BorderRadius.circular(10),
-                            // ),
                             value: selectedToCity,
                             onChanged: (tovalue) {
                               setState(() {
@@ -413,65 +368,7 @@ class _AddState extends State<Add> {
                             },
                           ),
                         ),
-                        Container(
-                          alignment: Alignment.topLeft,
-                          child: Text(
-                            "Select Class :",
-                            style: TextStyle(
-                                fontSize: 18, fontWeight: FontWeight.bold),
-                          ),
-                        ),
-                        Padding(
-                          padding: EdgeInsets.all(8.0),
-                          child: DropdownButtonFormField2(
-                            decoration: InputDecoration(
-                              fillColor: Colors.grey.shade100,
-                              filled: true,
-                              isDense: true,
-                              contentPadding: EdgeInsets.zero,
-                              border: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(10),
-                              ),
-                            ),
-                            isExpanded: true,
-                            hint: const Text(
-                              'Select Bus Type',
-                              style: TextStyle(fontSize: 14),
-                            ),
-                            // icon: const Icon(
-                            //   Icons.arrow_drop_down,
-                            //   color: Colors.black45,
-                            // ),
-                            // iconSize: 30,
-                            // buttonHeight: 60,
-                            // buttonPadding:
-                            //     const EdgeInsets.only(left: 20, right: 10),
-                            // dropdownDecoration: BoxDecoration(
-                            //   borderRadius: BorderRadius.circular(10),
-                            // ),
-                            value: selectedbustype,
-                            onChanged: (newvalue) {
-                              setState(() {
-                                selectedbustype = newvalue.toString();
-                              });
-                            },
-                            items: _locations
-                                .map((location) => DropdownMenuItem<String>(
-                                      value: location,
-                                      child: Text(
-                                        location,
-                                        style: TextStyle(
-                                          fontSize: 18,
-                                        ),
-                                      ),
-                                    ))
-                                .toList(),
-                            validator: (value) {
-                              if (value == null) return 'Please select class';
-                              return null;
-                            },
-                          ),
-                        ),
+
                         Container(
                           alignment: Alignment.topLeft,
                           child: Text(
@@ -507,6 +404,242 @@ class _AddState extends State<Add> {
                             },
                           ),
                         ),
+                        Container(
+                          alignment: Alignment.topLeft,
+                          child: Text(
+                            "Select Class :",
+                            style: TextStyle(
+                                fontSize: 18, fontWeight: FontWeight.bold),
+                          ),
+                        ),
+                        Padding(
+                          padding: EdgeInsets.all(8.0),
+                          child: DropdownButtonFormField2(
+                            decoration: InputDecoration(
+                              fillColor: Colors.grey.shade100,
+                              filled: true,
+                              isDense: true,
+                              contentPadding: EdgeInsets.zero,
+                              border: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(10),
+                              ),
+                            ),
+                            isExpanded: true,
+                            hint: const Text(
+                              'Select Bus Type',
+                              style: TextStyle(fontSize: 14),
+                            ),
+                            value: selectedbustype,
+                            onChanged: (newvalue) {
+                              setState(() {
+                                selectedbustype = newvalue.toString();
+                              });
+                            },
+                            items: _locations
+                                .map((location) => DropdownMenuItem<String>(
+                                      value: location,
+                                      child: Text(
+                                        location,
+                                        style: TextStyle(
+                                          fontSize: 18,
+                                        ),
+                                      ),
+                                    ))
+                                .toList(),
+                            validator: (value) {
+                              if (value == null) return 'Please select class';
+                              return null;
+                            },
+                          ),
+                        ),
+                        SizedBox(
+                          height: 10,
+                        ),
+                        Container(
+                          alignment: Alignment.topLeft,
+                          child: Text(
+                            "Choose Your Seat :",
+                            style: TextStyle(
+                                fontSize: 18, fontWeight: FontWeight.bold),
+                          ),
+                        ),
+                        SizedBox(
+                          height: 10,
+                        ),
+                        SizedBox(
+                          width: 300,
+                          height: 480,
+                          child: SeatLayoutWidget(
+                            // key: seatno,
+                            onSeatStateChanged: (rowI, colI, seatState) {
+                              ScaffoldMessenger.of(context)
+                                  .hideCurrentSnackBar();
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                SnackBar(
+                                  content: seatState == SeatState.selected
+                                      ? Text("Selected Seat[$rowI][$colI]")
+                                      : Text("De-selected Seat[$rowI][$colI]"),
+                                ),
+                              );
+                              if (seatState == SeatState.selected) {
+                                selectedSeats
+                                    .add(SeatNumber(rowI: rowI, colI: colI));
+                              } else {
+                                selectedSeats
+                                    .remove(SeatNumber(rowI: rowI, colI: colI));
+                              }
+                            },
+                            stateModel: const SeatLayoutStateModel(
+                              pathDisabledSeat:
+                                  'assets/svg_disabled_bus_seat.svg',
+                              pathSelectedSeat:
+                                  'assets/svg_selected_bus_seats.svg',
+                              pathSoldSeat: 'assets/svg_sold_bus_seat.svg',
+                              pathUnSelectedSeat:
+                                  'assets/svg_unselected_bus_seat.svg',
+                              rows: 10,
+                              cols: 6,
+                              seatSvgSize: 45,
+                              currentSeatsState: [
+                                [
+                                  SeatState.unselected,
+                                  SeatState.unselected,
+                                  SeatState.empty,
+                                  SeatState.unselected,
+                                  SeatState.unselected,
+                                  SeatState.sold,
+                                ],
+                                [
+                                  SeatState.sold,
+                                  SeatState.unselected,
+                                  SeatState.empty,
+                                  SeatState.unselected,
+                                  SeatState.unselected,
+                                  SeatState.unselected,
+                                ],
+                                [
+                                  SeatState.unselected,
+                                  SeatState.unselected,
+                                  SeatState.empty,
+                                  SeatState.sold,
+                                  SeatState.unselected,
+                                  SeatState.unselected,
+                                ],
+                                [
+                                  SeatState.unselected,
+                                  SeatState.unselected,
+                                  SeatState.empty,
+                                  SeatState.unselected,
+                                  SeatState.unselected,
+                                  SeatState.unselected,
+                                ],
+                                [
+                                  SeatState.unselected,
+                                  SeatState.unselected,
+                                  SeatState.empty,
+                                  SeatState.unselected,
+                                  SeatState.unselected,
+                                  SeatState.sold,
+                                ],
+                                [
+                                  SeatState.unselected,
+                                  SeatState.sold,
+                                  SeatState.empty,
+                                  SeatState.unselected,
+                                  SeatState.unselected,
+                                  SeatState.unselected,
+                                ],
+                                [
+                                  SeatState.unselected,
+                                  SeatState.unselected,
+                                  SeatState.empty,
+                                  SeatState.unselected,
+                                  SeatState.unselected,
+                                  SeatState.unselected,
+                                ],
+                                [
+                                  SeatState.unselected,
+                                  SeatState.unselected,
+                                  SeatState.empty,
+                                  SeatState.unselected,
+                                  SeatState.unselected,
+                                  SeatState.unselected,
+                                ],
+                                [
+                                  SeatState.unselected,
+                                  SeatState.unselected,
+                                  SeatState.empty,
+                                  SeatState.unselected,
+                                  SeatState.unselected,
+                                  SeatState.sold,
+                                ],
+                                [
+                                  SeatState.unselected,
+                                  SeatState.unselected,
+                                  SeatState.empty,
+                                  SeatState.sold,
+                                  SeatState.unselected,
+                                  SeatState.unselected,
+                                ],
+                              ],
+                            ),
+                          ),
+                        ),
+                        SizedBox(
+                          child: Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Row(
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: [
+                                    SvgPicture.asset(
+                                      'assets/svg_disabled_bus_seat.svg',
+                                      width: 15,
+                                      height: 15,
+                                    ),
+                                    const Text('Disabled')
+                                  ],
+                                ),
+                                Row(
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: [
+                                    SvgPicture.asset(
+                                      'assets/svg_sold_bus_seat.svg',
+                                      width: 15,
+                                      height: 15,
+                                    ),
+                                    const Text('Sold')
+                                  ],
+                                ),
+                                Row(
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: [
+                                    SvgPicture.asset(
+                                      'assets/svg_unselected_bus_seat.svg',
+                                      width: 15,
+                                      height: 15,
+                                    ),
+                                    const Text('Available')
+                                  ],
+                                ),
+                                Row(
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: [
+                                    SvgPicture.asset(
+                                      'assets/svg_selected_bus_seats.svg',
+                                      width: 15,
+                                      height: 15,
+                                    ),
+                                    const Text(' Selected ')
+                                  ],
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+
                         SizedBox(
                           height: 10,
                         ),
@@ -525,7 +658,9 @@ class _AddState extends State<Add> {
                             child: changebutton
                                 ? Icon(Icons.done)
                                 : Text(
-                                    widget.id == null ? "Submit" : "Update",
+                                    widget.id == null
+                                        ? "Submit to Book"
+                                        : "Update ",
                                     style: TextStyle(
                                         color: Colors.white,
                                         fontWeight: FontWeight.bold,
@@ -533,6 +668,7 @@ class _AddState extends State<Add> {
                                   ),
                           ),
                         ),
+                        Text(selectedSeats.join(" , ")),
                       ]),
                     ),
                   )
@@ -547,6 +683,13 @@ class _AddState extends State<Add> {
     var userId = FirebaseAuth.instance.currentUser!.uid.toString();
     if (_formkey.currentState!.validate()) {
       try {
+        if (selectedSeats.isEmpty) {
+          Get.showSnackbar(GetSnackBar(
+            message: "Please Select the seat",
+            duration: Duration(seconds: 1),
+          ));
+          return;
+        }
         setState(() {
           changebutton = true;
         });
@@ -560,6 +703,7 @@ class _AddState extends State<Add> {
             'tocity': selectedToCity,
             'bustype': selectedbustype,
             'date': dateofJourney.text,
+            "selectedSeats": selectedSeats.toString(),
             'userId': userId,
           }).whenComplete(() {
             Get.snackbar("Bus-Ticket Book", "Ticket book successfully",
@@ -580,6 +724,7 @@ class _AddState extends State<Add> {
             'tocity': selectedToCity,
             'bustype': selectedbustype,
             'date': dateofJourney.text,
+            "selectedSeats": selectedSeats.toString(),
             'userId': userId
           }).whenComplete(() {
             Get.snackbar(
@@ -600,5 +745,25 @@ class _AddState extends State<Add> {
             snackPosition: SnackPosition.BOTTOM);
       }
     }
+  }
+}
+
+class SeatNumber {
+  final int rowI;
+  final int colI;
+
+  const SeatNumber({required this.rowI, required this.colI});
+
+  @override
+  bool operator ==(Object other) {
+    return rowI == (other as SeatNumber).rowI && colI == (other).colI;
+  }
+
+  @override
+  int get hashCode => rowI.hashCode;
+
+  @override
+  String toString() {
+    return '[$rowI][$colI]';
   }
 }

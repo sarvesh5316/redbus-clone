@@ -246,19 +246,6 @@ class _LoginPageState extends State<LoginPage> {
                       ],
                     ),
                   )),
-
-                  /* Container(
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(20),
-                      ),
-                      child: MaterialButton(
-                          highlightColor: Colors.transparent,
-                          splashColor: Colors.white70,
-                          onPressed: (){
-                            Navigator.push(context, MaterialPageRoute(builder: (context)=>SignupPage()),);
-
-                          }, child: Text("Sign Up",style: TextStyle(fontSize: 25,fontWeight: FontWeight.bold),))
-                  ),*/
                 ],
               ),
             ),
